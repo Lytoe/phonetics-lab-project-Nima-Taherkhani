@@ -4,10 +4,9 @@
 
 This project investigates how French phoneme categories, especially oral vowels, are represented in classical acoustic features and in neural speech representations. The corpus is the Russian–French Interference Corpus, containing French sentence productions by native French speakers and Russian L1 learners of French.
 
-The implemented pipeline covers corpus parsing, acoustic extraction, acoustic quality control, Lobanov normalisation, descriptive statistics, L1/L2 tests, residual gender tests, acoustic distance matrices, an acoustic nearest-centroid classifier, and preliminary Whisper neural representation extraction.
+The implemented pipeline covers corpus parsing, acoustic extraction, acoustic quality control, Lobanov normalisation, descriptive statistics, L1/L2 tests, residual gender tests, acoustic distance matrices, an acoustic nearest-centroid classifier, and Whisper neural representation extraction.
 
-Due to hardware and time constraints, the submitted neural branch is partial: Whisper-small layer 4 was fully extracted, while the full XLS-R branch and some advanced modelling sections remain incomplete. All reported numeric results below are based on generated project outputs, not simulated values.
-
+Due to hardware and time constraints, the submitted neural branch is partial but no longer limited to a single layer: Whisper-small layers 4 and 10 were fully extracted for the valid oral-vowel token set. The full XLS-R branch, neural PCA/UMAP analysis, mixed-effects models, ROPE classification, and hierarchical clustering remain incomplete. All reported numeric results below are based on generated project outputs, not simulated values.
 ---
 
 ## 2. Pipeline Summary
@@ -214,17 +213,20 @@ This shows that normalised F1/F2 captures much of the French oral vowel structur
 
 ---
 
-## 12. Preliminary Whisper Representation
+## 12. Whisper Neural Representations
 
-Whisper-small layer 4 embeddings were extracted for the same valid oral vowel tokens.
+Whisper-small embeddings were extracted for the same valid oral-vowel token set used in the acoustic analysis. Two encoder layers were extracted: layer 4 as a lower/intermediate representation and layer 10 as a higher-layer representation.
 
-Result:
+Results:
 
-| Representation | Shape |
-|---|---|
-| Whisper-small layer 4 | (8262, 768) |
+| Representation | Shape | Failed WAVs | Failed tokens |
+|---|---:|---:|---:|
+| Whisper-small layer 4 | (8262, 768) | 0 | 0 |
+| Whisper-small layer 10 | (8262, 768) | 0 | 0 |
 
-This confirms that each vowel token has a 768-dimensional neural representation. Due to time and hardware constraints, the full neural analysis is incomplete in this submission. The code supports extraction of additional layers, including upper-layer Whisper representations.
+This confirms that each valid vowel token has a 768-dimensional neural representation at two different Whisper encoder depths. The extraction was performed by processing each WAV file once and pooling hidden-state frames over the phoneme interval, which is much more efficient than running Whisper separately for each phoneme token.
+
+The full downstream neural analysis — PCA/UMAP, neural L1/L2 tests, neural distance matrices, Mantel tests, and neural classifiers — was not completed before submission. However, the extracted Whisper files provide the necessary foundation for those analyses.
 
 ---
 
@@ -236,11 +238,11 @@ PCA and UMAP are dimensionality-reduction methods. PCA is linear: it finds ortho
 
 ## Q2. Which phonemes exhibit the greatest inter-speaker variability in the acoustic space? Is this reflected in the neural representation space?
 
-In the acoustic space, /ə/, /ɑ/, /y/, /ɛ/, and /ø/ showed the largest descriptive inter-speaker F1 variability. However, /ə/ has relatively few tokens, so /ɑ/ and /y/ are more reliable candidates. Neural reflection was not fully analysed yet; only Whisper layer 4 extraction was completed.
+In the acoustic space, /ə/, /ɑ/, /y/, /ɛ/, and /ø/ showed the largest descriptive inter-speaker F1 variability. However, /ə/ has relatively few tokens, so /ɑ/ and /y/ are more reliable candidates. Neural reflection was not fully analysed yet. However, Whisper-small layers 4 and 10 were successfully extracted, so the next step would be to test whether the same high-variability vowels also show larger dispersion or weaker clustering in Whisper embedding space.
 
 ## Q3. In the UMAP projection, do Whisper and XLS-R representations form clearly separable phoneme clusters? Are the clusters aligned with the vowel trapezoid structure?
 
-UMAP projections were not completed in the submitted version. This remains future work. Based on the extracted Whisper embeddings, this analysis can be performed next using PCA/UMAP over the `(8262, 768)` layer-4 matrix.
+UMAP projections were not completed in the submitted version. This remains future work. However, the required Whisper input data now exists for two encoder layers: layer 4 and layer 10, both with shape `(8262, 768)`. The next analysis step would be to apply PCA and UMAP to these two matrices, then compare whether lower and higher Whisper layers produce separable vowel clusters and whether those clusters align with the expected French vowel trapezoid.
 
 ## Q4. What is the Mantel correlation between the acoustic RSM and the Whisper RSM? Between acoustic RSM and XLS-R RSM?
 
@@ -258,7 +260,7 @@ In acoustic features, significant corrected contrasts were:
 - /ɑ/ F1 and F2
 - /ɛ/ F1
 
-Neural L1/L2 tests were not completed.
+Neural L1/L2 tests were not completed. However, Whisper-small layers 4 and 10 were extracted successfully, so neural L1/L2 testing can be performed next by comparing L1 and L2 centroids or PCA components within each vowel and each layer.
 
 ## Q6. Which distance structure best captures the phonological distances expected from the IPA vowel trapezoid?
 
@@ -266,7 +268,7 @@ Among completed representations, the acoustic F1/F2 structure captures a plausib
 
 ## Q7. Which representation type yields the highest phoneme identification accuracy?
 
-Only the acoustic classifier was completed. It achieved 69.27% accuracy and 52.69% macro F1 using leave-one-speaker-out cross-validation. Neural classifier results remain future work.
+Only the acoustic classifier was completed. It achieved 69.27% accuracy and 52.69% macro F1 using leave-one-speaker-out cross-validation. Neural classifier results remain future work. Since Whisper-small layers 4 and 10 were successfully extracted, the next step would be to run the same nearest-centroid or logistic classifier on Whisper PCA components and compare acoustic vs neural classification accuracy.
 
 ## Q8. What is the ICC for F1 of /a/? Does it differ from the ICC on Whisper PC1 for /a/?
 
@@ -274,7 +276,7 @@ Mixed-effects ICC models were not completed. Descriptively, /a/ had low inter-sp
 
 ## Q9. Is the L1 × Gender interaction significant in the acoustic model? Is the same interaction significant in the Whisper model?
 
-Linear mixed-effects interaction models were not completed. However, speaker-level residual gender tests after Lobanov normalisation showed no robust gender effect after FDR correction.
+Linear mixed-effects interaction models were not completed. However, speaker-level residual gender tests after Lobanov normalisation showed no robust gender effect after FDR correction. The same L1 × Gender interaction was not tested in Whisper space, although the extracted layer-4 and layer-10 Whisper embeddings make that analysis possible in a future mixed-effects or PCA-based model.
 
 ## Q10. Which representation type yields the highest marginal R² for the L1/L2 fixed effect?
 
@@ -308,9 +310,11 @@ Only the acoustic classifier was completed. In the acoustic classifier, /ə/, /o
 
 ## 13. Limitations
 
-This submission is strongest on the acoustic branch. The neural branch is partially implemented and validated through Whisper layer-4 extraction, but full neural analysis, XLS-R, mixed-effects models, ROPE, and hierarchical clustering remain incomplete.
+This submission is strongest on the acoustic branch. The acoustic pipeline is complete and includes parsing, acoustic extraction, quality control, Lobanov normalisation, descriptive statistics, L1/L2 tests, residual gender tests, acoustic distance matrices, and an acoustic classifier.
 
-The main computational limitation was CPU-only neural extraction. The optimized Whisper extractor processes each WAV once and pools hidden states over phoneme intervals, making the method scalable, but full execution of all required neural models was not completed before submission.
+The neural branch now includes completed Whisper-small layer 4 and layer 10 extraction for the valid oral-vowel tokens. Both layers produced `(8262, 768)` embedding matrices with zero failed WAVs and zero failed tokens. However, the downstream neural analyses were not completed before submission: neural PCA/UMAP, neural L1/L2 tests, neural distance matrices, Mantel tests, neural classifiers, XLS-R extraction, mixed-effects models, ROPE classification, and hierarchical clustering remain incomplete.
+
+The main computational limitation was CPU-only neural extraction. The optimized Whisper extractor processes each WAV once and pools hidden states over phoneme intervals, making the method scalable, but full execution of all required neural analyses was not completed before submission.
 
 ---
 
@@ -318,4 +322,4 @@ The main computational limitation was CPU-only neural extraction. The optimized 
 
 The completed acoustic analysis shows that Lobanov-normalised F1/F2 features recover a plausible French vowel space, support moderate vowel identification accuracy, and reveal several L1/L2 differences. The strongest practically meaningful L1/L2 contrast was /u/ F1. Gender effects were not robust after Lobanov normalisation.
 
-The project codebase provides a reproducible foundation for extending the analysis to full Whisper and XLS-R representations.
+The project codebase provides a reproducible foundation for extending the analysis from the completed Whisper layer-4 and layer-10 extractions toward full neural PCA/UMAP, XLS-R, Mantel comparison, ROPE, and clustering analyses.
