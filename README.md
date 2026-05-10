@@ -1,30 +1,45 @@
 # Acoustic and Neural Representations in a Phonetically Aligned Speech Corpus
 
-M1/M2 Advanced Statistics research project.
+M1 Final projet for stats for textual data course 
 
-## Goal
-Compare classical acoustic features and neural speech embeddings on the Russian–French Interference Corpus.
+This project analyses the Russian–French Interference Corpus by comparing classical acoustic phonetic features with preliminary neural speech representations.
 
-## Pipeline stages
-1. `parse_corpus` -> phoneme token table
-2. `extract_acoustics` -> formants, f0, duration, energy
-3. `extract_neural_whisper` -> Whisper embeddings
-4. `extract_neural_xlsr` -> XLS-R embeddings
-5. `normalise` -> Lobanov + PCA/UMAP
-6. `analyse` -> statistics, figures, tables, answers
+The strongest completed part of the project is the acoustic analysis pipeline. A preliminary Whisper-small neural extraction stage is also implemented and validated.
 
-## Setup
-```bash
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
+---
 
-## Run pipeline
-```bash
-snakemake --cores 1
-```
+## Submission Status
 
-## Data
-Put the ORTOLANG corpus files in `data/raw/`.
-Expected content: WAV files, TextGrid files, and metadata CSV.
+### Completed
+
+- Corpus inspection
+- TextGrid parsing from the `phones` tier
+- Phoneme-token table generation
+- Malformed label filtering
+- Acoustic feature extraction with Praat/Parselmouth
+- Acoustic quality control
+- Lobanov normalisation
+- Descriptive acoustic statistics
+- Acoustic vowel-space visualisations
+- L1/L2 acoustic statistical tests with FDR correction
+- Effect-size reporting
+- Residual gender tests after Lobanov normalisation
+- Acoustic distance matrices
+- Bootstrap confidence intervals for selected vowel pairs
+- Acoustic nearest-centroid classifier with leave-one-speaker-out cross-validation
+- Whisper-small layer 4 embedding extraction
+
+### Partially Completed / Future Work
+
+- Whisper upper-layer extraction
+- XLS-R extraction
+- PCA/UMAP visualisation of full neural representations
+- Mantel comparison between acoustic and neural representational similarity matrices
+- Linear mixed-effects models
+- ROPE classification
+- Hierarchical clustering and ARI evaluation
+
+The final written report is available at:
+
+```text
+report/final_report.md

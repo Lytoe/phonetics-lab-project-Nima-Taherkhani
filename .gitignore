@@ -21,3 +21,6 @@ results/
 .DS_Store
 Thumbs.db
 .vscode/
+# Temporary Kaggle upload package
+kaggle_upload/
+kaggle_upload.zip
