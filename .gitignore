@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Data - do NOT upload corpus files
+data/raw/
+data/interim/
+data/processed/
+
+# Results can be regenerated
+results/
+
+# Heavy model outputs
+*.npz
+*.wav
+*.TextGrid
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/

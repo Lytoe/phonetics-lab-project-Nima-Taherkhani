@@ -1,0 +1,25 @@
+paths:
+  raw_dir: data/raw
+  interim_dir: data/interim
+  processed_dir: data/processed
+  results_dir: results
+
+acoustics:
+  n_formants: 5
+  max_formant_female: 5000
+  max_formant_male: 4500
+  long_vowel_ms: 80
+
+neural:
+  whisper_model: openai/whisper-medium
+  whisper_layers: [6, 20]
+  xlsr_model: facebook/wav2vec2-large-xlsr-53
+  xlsr_layers: [4, 10, 18]
+  pca_dims: 50
+  random_state: 42
+
+statistics:
+  bootstrap_B: 2000
+  permutation_B: 5000
+  alpha: 0.05
+  acoustic_rope_hz: [-20, 20]

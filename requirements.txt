@@ -1,0 +1,17 @@
+pandas
+numpy
+scipy
+scikit-learn
+statsmodels
+matplotlib
+seaborn
+textgrid
+praat-parselmouth
+snakemake
+transformers
+torch
+librosa
+soundfile
+umap-learn
+pingouin
+scikit-bio
